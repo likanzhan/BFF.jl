@@ -1,0 +1,13 @@
+name = "BFF"
+uuid = "2335f6f1-b8dc-44c7-a5e6-e8f0c8df1819"
+authors = ["Likan Zhan <zhanlikan@hotmail.com> and contributors"]
+version = "0.1.0"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
