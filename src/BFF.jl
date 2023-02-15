@@ -1,6 +1,6 @@
 module BFF
 
-using Makie, GLMakie, CairoMakie
+using Makie
 export τ², F₁₀, bff, BFMakie
 
 ### 0. Define the BayesFactor Struct
@@ -115,7 +115,7 @@ function BFMakie(BF::BayesFactor; xlimits = (0, 1), ylimits = (BF.MinVal, BF.Max
         lines!(ax,  BF.omegas, BF.BFs, linewidth = 5, color = :black, label = label)
         vlines!(ax, BF.omegaMax, linestyle = :dash, color = :black)
         hlines!(ax, 1, linestyle = :solid, color = :black)
-    return fig
+    fig
 end
 
 
@@ -148,11 +148,10 @@ BFft = let
     bff(args)
 end
     
-
 fig = BFMakie(BFft, ylimits = (0.005, 7), label = "Cmobined")
 lines!(fig.content[1], BFf1.omegas, BFf1.BFs, linewidth = 5, linestyle = :dot,   color = :red, label = "Original")
 lines!(fig.content[1], BFf2.omegas, BFf2.BFs, linewidth = 5, linestyle = :dash,  color = :green, label = "Replication")
 axislegend(fig.content[1])
 
 fig
-end # Model
+end # Module
