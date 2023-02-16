@@ -1,7 +1,8 @@
 module BFF
 
 using Makie
-export τ², F₁₀, bff, BFMakie
+
+export τ², BF₁₀, bff, BFMakie
 
 ### 0. Define the BayesFactor Struct
 struct BayesFactor{T <: AbstractFloat}
@@ -29,9 +30,9 @@ const ωs = 0:0.001:1
 ### 2. Define BF10 #####################################
 function BF₁₀(::Val{:𝑧}, τ²::Float64, 𝑧)
     𝑧² = 𝑧^2
-    term1 = (τ²+1)^(-3/2)
-    term2 = (1+τ²*𝑧²/(τ²+1))
-    term3 = exp(τ²*𝑧²/(2(τ²+1)))
+    term1 = (τ² + 1)^(-3/2)
+    term2 = (1 + τ² * 𝑧² / (τ² + 1))
+    term3 = exp(τ² * 𝑧² / (2 * (τ² + 1)))
     return term1 * term2 * term3
 end
 
@@ -80,17 +81,15 @@ function bff(DTs::Vector)
     Res = Vector(undef, length(DTs))
     for (idx, value) in enumerate(DTs)
         Res[idx] = bff(value...)
-    end
-    BFs1 = Res[1].BFs
-    BFs2 = Res[2].BFs
-    BFst = BFs1 .* BFs2
-
+    end  
+    τs   = Res[1].taus.* Res[2].taus
+    BFst =  Res[1].BFs .* Res[2].BFs
     MaxVal, MaxInd = findmax(BFst)
     MinVal, MinInd = findmin(BFst)
-    τMax  = (Res[1].taus)[MaxInd]
+    τMax  = τs[MaxInd]
     ωMax  = ωs[MaxInd]
 
-    BayesFactor(BFst, Res[1].taus, ωs, MaxVal, MaxInd, MinVal, MinInd, τMax, ωMax)
+    BayesFactor(BFst, τs, ωs, MaxVal, MaxInd, MinVal, MinInd, τMax, ωMax)
 end
 
 ### 4. Define the plot function
@@ -117,7 +116,6 @@ function BFMakie(BF::BayesFactor; xlimits = (0, 1), ylimits = (BF.MinVal, BF.Max
         hlines!(ax, 1, linestyle = :solid, color = :black)
     fig
 end
-
 
 ### 5. Replication of the examples defined in the paper
 BFz = bff((:oneSample, 100), (:𝑧, 2))
